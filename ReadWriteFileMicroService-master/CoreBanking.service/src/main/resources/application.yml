@@ -1,0 +1,13 @@
+server:
+  port: 9002
+
+
+spring:
+    h2:
+       console.enabled: true
+
+    application:
+      name: Core-Banking
+    zipkin:
+      base-url: http://127.0.0.1:9411/
+

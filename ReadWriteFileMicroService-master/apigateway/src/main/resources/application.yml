@@ -1,0 +1,45 @@
+server:
+  port: 9292
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: READ-WRITE
+          uri: lb://READ-WRITE
+          predicates:
+            - Path=/readwrite/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: READ-WRITE
+                fallbackuri: forward:/coreBankingServiceFallBackMethod
+
+        - id: ADVANCED-OPERATION
+          uri: lb://ADVANCED-OPERATION
+          predicates:
+            - Path=/advancedoperation/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ADVANCED-OPERATION
+                fallbackuri: forward:/reportGenerationServiceFallBackMethod
+
+        - id: USER-MANAGEMENT
+          uri: lb://USER-MANAGEMENT
+          predicates:
+              - Path=/api/v1/users/**,/api/v1/token/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: USER-MANAGEMENT
+                fallbackuri: forward:/userManagementServiceFallBack
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
